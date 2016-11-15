@@ -10,9 +10,13 @@ To experience, load circles.html in Safari 10.0.1 or iOS 10.1, read along, and s
 
 ![iOS 10.1](img-or-it-didnt-happen/ios10p1.gif)
 
+---
+
 #### Not happening in iOS 10.2 Public Beta 2:
 
 ![iOS 10.2 beta 2](img-or-it-didnt-happen/ios10p2b.gif)
+
+---
 
 #### Happening in Safari 10.0.1
 
