@@ -2,7 +2,7 @@ In iOS 10.1 and Safari 10.0.1 (and as far as I can tell _only_ on iOS 10.1 and S
 
 But it gets weirder.
 
-To experience, load circles.html in Safari 10.0.1 or iOS 10.1, read along, and start zooming. Tweet me and/or pull request if you notice it in any other iOS or Safari builds.
+To experience, [load circles.html](https://htmlpreview.github.io/?https://github.com/unitof/90-degree-safari/blob/master/circles.html) in Safari 10.0.1 or iOS 10.1, read along, and start zooming. Tweet me and/or pull request if you notice it in any other iOS or Safari builds.
 
 ### Proof
 
