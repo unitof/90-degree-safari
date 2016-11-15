@@ -16,6 +16,6 @@ To experience, load circles.html in Safari 10.0.1 or iOS 10.1, read along, and s
 
 #### Happening in Safari 10.0.1
 
-(0n macOS 10.12.2 Beta)
+(on macOS 10.12.2 Beta)
 
 ![macOS Safari 10.0.1](img-or-it-didnt-happen/safari10p0p1.gif)
