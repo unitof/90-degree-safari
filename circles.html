@@ -1,0 +1,172 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <table>
+    <tr><td colspan="2">In Safari 10.0.1 and iOS 10.1, strange behavior can be observed on SVG shapes with <code>rotate</code> values not divisible by 90 degrees, when <code>transform-origin: center center;</code></td></tr>
+    <tr>
+      <td>
+
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot" r="35" cy="40" cx="40" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-90deg);</code>
+        <p>The stroke improperly begins <a href="https://www.w3.org/TR/SVG11/shapes.html#CircleElement">at 3:00</a>, as if the <code>transform</code> rule hadn't been applied.</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot-offset" r="35" cy="40" cx="40" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-90.1deg);</code>
+        <p>The stroke begins at (twelve seconds before) 12:00, as expected.</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <circle class="turnrot" r="35" cy="40" cx="40" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-0.25turn);</code>
+        <p>The same bug applies to any <code>rotate</code> value which computes to a multiple of 90 degrees.</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <circle class="turnrot-offset" r="35" cy="40" cx="40" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-0.251turn);</code>
+        <p>43 seconds before noon.</p>
+      </td>
+    </tr>
+
+
+    <tr><td colspan="2">But when the SVG element specifies a <code>viewBox</code> which is being scaled down, things can get weird:</td></tr>
+    
+    <tr>
+      <td>
+
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot" r="70" cy="80" cx="80" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-90deg);</code>
+        <p>So far, so the same.</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+
+        <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot-offset" r="70" cy="80" cx="80" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-90.1deg);</code>
+        <p>But now, offsetting by a little bit doesn't work, <em>unless</em> you zoom in the page in past a certain zoom threshold (either via pinching, or <code>View > Zoom</code> and/or keyboard shortcut). Try it; it's unsetting!</p>
+        <p>This is probably because of some rounding of that the zooming engine performs, because...</p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+
+        <svg viewBox="0 0 160 160" class="scaledown" xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot-offset-more" r="70" cy="80" cx="80" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-92deg);</code>
+        <p>offsetting by a larger amount restores expected behavior.</p>
+      </td>
+    </tr>
+
+    <tr><td colspan="2">If the SVG element is not being scaled <em>down</em>, behavior identical to the first section resumes. Zooming has no effect:</td></tr>
+    
+    <tr>
+      <td>
+        
+        <svg viewBox="0 0 80 80" class="noscale" xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot" r="35" cy="40" cx="40" />
+        </svg>
+
+        <svg viewBox="0 0 40 40" class="scaleup" xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot" r="17.5" cy="20" cx="20" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-90deg);</code>
+        <p>
+        Top: No scaling (viewBox dimensions match parent element's)<br><br>
+        Bottom: Scaling up (viewBox dimensions half of parent element's)
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        
+        <svg viewBox="0 0 80 80" class="noscale" xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot-offset" r="35" cy="40" cx="40" />
+        </svg>
+
+        <svg viewBox="0 0 40 40" class="scaleup" xmlns="http://www.w3.org/2000/svg">
+          <circle class="degrot-offset" r="17.5" cy="20" cx="20" />
+        </svg>
+
+      </td>
+      <td>
+        <code>transform: rotate(-90.1deg);</code>
+        <p>
+          Top: No scaling (viewBox dimensions match parent element's)<br><br>
+          Bottom: Scaling up (viewBox dimensions half of parent element's)
+        </p>
+      </td>
+    </tr>
+
+    <tr><td colspan="2">But there is one exception:</td></tr>
+
+    <tr>
+      <td>
+        
+        <svg class="degrot wc" xmlns="http://www.w3.org/2000/svg">
+          <circle r="35" cy="40" cx="40" />
+        </svg>
+
+      </td>
+      <td>
+        <p>On the parent <code>svg</code> element:</p>
+        <code>transform: rotate(-90deg);<br>will-change: transform;</code>
+        <p>Iff the the the rotation is applied to a <em>parent</em> of the SVG shape (including the SVG element itself) along with the rule <code>will-change: transform</code>, all rotation values work as expected.</p>
+      </td>
+    </tr>
+
+    <tr><td colspan="2">All these behaviors have been observed in Safari 10.0.1 and iOS 10.1. They appear to be fixed as of iOS 10.2 Beta 2.</td></tr>
+  </table>
+</body>
